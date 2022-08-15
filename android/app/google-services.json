@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "701253424369",
+    "project_id": "esfaw-84549",
+    "storage_bucket": "esfaw-84549.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701253424369:android:d3153f6cf8ddb6825cc550",
+        "android_client_info": {
+          "package_name": "com.axolotls.esfaw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701253424369-ha5prqa0qrlvqm1jh7j55ughjfjp2gcp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsgJAmt_hhsLBko-G8Vy00_Hq8OlRYMSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701253424369-ha5prqa0qrlvqm1jh7j55ughjfjp2gcp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "701253424369-6oo197gu3od1a81ukvmtq6k3el5u9vhi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.axolotls.esfaw"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
