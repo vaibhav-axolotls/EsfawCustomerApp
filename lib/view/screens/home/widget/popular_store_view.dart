@@ -41,7 +41,7 @@ class PopularStoreView extends StatelessWidget {
         children: [
 
           Padding(
-            padding: EdgeInsets.fromLTRB(10, isPopular ? 2 : 15, 10, 10),
+            padding: EdgeInsets.fromLTRB(15, isPopular ? 2 : 15, 10, 10),
             child: TitleWidget(
               title: isFeatured ? 'featured_stores'.tr : isPopular ? Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
                   ? 'popular_restaurants'.tr : 'popular_stores'.tr : '${'new_on'.tr} ${AppConstants.APP_NAME}',
@@ -60,7 +60,7 @@ class PopularStoreView extends StatelessWidget {
               itemBuilder: (context, index){
 
                 return Padding(
-                  padding: EdgeInsets.only(right: Dimensions.PADDING_SIZE_SMALL, bottom: 5),
+                  padding: EdgeInsets.only(right: Dimensions.PADDING_SIZE_SMALL, bottom: 10),
                   child: InkWell(
                     onTap: () {
                       if(isFeatured && Get.find<SplashController>().moduleList != null) {

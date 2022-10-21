@@ -145,6 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             nextFocus: _passwordFocus,
                             inputType: TextInputType.phone,
                             divider: false,
+
                           )),
                         ]),
                         Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_LARGE), child: Divider(height: 1)),
@@ -198,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //   onPressed: () =>Get.toNamed(RouteHelper.getSignInRoute(RouteHelper.signUp)),
                       // )),
                       Expanded(child: CustomButton(
-                        buttonText: 'sign_up'.tr,
+                        buttonText: 'Proceed'.tr,
                         onPressed: authController.acceptTerms ? () => _register(authController, _countryDialCode) : null,
                       )),
                     ]) : Center(child: CircularProgressIndicator()),
@@ -256,6 +257,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       //   showCustomSnackBar('password_should_be'.tr);
       // }else if (_password != _confirmPassword) {
       //   showCustomSnackBar('confirm_password_does_not_matched'.tr);
+    }else if(_number.length !=10){
+      showCustomSnackBar('enter_phone_number'.tr);
+
     }else if (_referCode.isNotEmpty && _referCode.length != 10) {
       showCustomSnackBar('invalid_refer_code'.tr);
     }else {
@@ -265,9 +269,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       authController.registration(signUpBody).then((status) async {
         if (status.isSuccess) {
           // if(Get.find<SplashController>().configModel.customerVerification) {
-            List<int> _encoded = utf8.encode(_password);
-            String _data = base64Encode(_encoded);
-            Get.toNamed(RouteHelper.getVerificationRoute(_numberWithCountryCode, status.message, RouteHelper.signUp, _data));
+          List<int> _encoded = utf8.encode(_password);
+          String _data = base64Encode(_encoded);
+          Get.toNamed(RouteHelper.getVerificationRoute(_numberWithCountryCode, status.message, RouteHelper.signUp, _data));
           // }else {
           //   Get.toNamed(RouteHelper.getAccessLocationRoute(RouteHelper.signUp));
           // }

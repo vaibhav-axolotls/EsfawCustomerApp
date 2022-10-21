@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
+import 'package:sixam_mart/data/model/body/notification_body.dart';
 import 'package:sixam_mart/data/model/body/social_log_in_body.dart';
 import 'package:sixam_mart/data/model/response/address_model.dart';
 import 'package:sixam_mart/data/model/response/basic_campaign_model.dart';
+import 'package:sixam_mart/data/model/response/conversation_model.dart';
 import 'package:sixam_mart/data/model/response/order_model.dart';
 import 'package:sixam_mart/data/model/response/item_model.dart';
 import 'package:sixam_mart/data/model/response/parcel_category_model.dart';
@@ -15,11 +17,15 @@ import 'package:sixam_mart/view/base/image_viewer_screen.dart';
 import 'package:sixam_mart/view/base/not_found.dart';
 import 'package:sixam_mart/view/screens/address/add_address_screen.dart';
 import 'package:sixam_mart/view/screens/address/address_screen.dart';
+import 'package:sixam_mart/view/screens/auth/delivery_man_registration_screen.dart';
+import 'package:sixam_mart/view/screens/auth/store_registration_screen.dart';
 import 'package:sixam_mart/view/screens/auth/sign_in_screen.dart';
 import 'package:sixam_mart/view/screens/auth/sign_up_screen.dart';
 import 'package:sixam_mart/view/screens/cart/cart_screen.dart';
 import 'package:sixam_mart/view/screens/category/category_item_screen.dart';
 import 'package:sixam_mart/view/screens/category/category_screen.dart';
+import 'package:sixam_mart/view/screens/chat/chat_screen.dart';
+import 'package:sixam_mart/view/screens/chat/conversation_screen.dart';
 import 'package:sixam_mart/view/screens/checkout/checkout_screen.dart';
 import 'package:sixam_mart/view/screens/checkout/order_successful_screen.dart';
 import 'package:sixam_mart/view/screens/checkout/payment_screen.dart';
@@ -111,9 +117,21 @@ class RouteHelper {
   static const String itemDetails = '/item-details';
   static const String wallet = '/wallet';
   static const String referAndEarn = '/refer-and-earn';
+  static const String messages = '/messages';
+  static const String conversation = '/conversation';
+  static const String restaurantRegistration = '/restaurant-registration';
+  static const String deliveryManRegistration = '/delivery-man-registration';
+
 
   static String getInitialRoute() => '$initial';
-  static String getSplashRoute(int orderID) => '$splash?id=$orderID';
+  static String getSplashRoute(NotificationBody body) {
+    String _data = 'null';
+    if(body != null) {
+      List<int> _encoded = utf8.encode(jsonEncode(body.toJson()));
+      _data = base64Encode(_encoded);
+    }
+    return '$splash?data=$_data';
+  }
   static String getLanguageRoute(String page) => '$language?page=$page';
   static String getOnBoardingRoute() => '$onBoarding';
   static String getSignInRoute(String page) => '$signIn?page=$page';
@@ -135,13 +153,13 @@ class RouteHelper {
   static String getResetPasswordRoute(String phone, String token, String page) => '$resetPassword?phone=$phone&token=$token&page=$page';
   static String getSearchRoute({String queryText}) => '$search?query=${queryText ?? ''}';
   static String getStoreRoute(int id, String page) => '$store?id=$id&page=$page';
-  static String getOrderDetailsRoute(int orderID) {
-    return '$orderDetails?id=$orderID';
+  static String getOrderDetailsRoute(int orderID, {bool fromNotification}) {
+    return '$orderDetails?id=$orderID&from=${fromNotification.toString()}';
   }
   static String getProfileRoute() => '$profile';
   static String getUpdateProfileRoute() => '$updateProfile';
   static String getCouponRoute() => '$coupon';
-  static String getNotificationRoute() => '$notification';
+  static String getNotificationRoute({bool fromNotification}) => '$notification?from=${fromNotification.toString()}';
   static String getMapRoute(AddressModel addressModel, String page) {
     List<int> _encoded = utf8.encode(jsonEncode(addressModel.toJson()));
     String _data = base64Encode(_encoded);
@@ -198,10 +216,31 @@ class RouteHelper {
   static String getItemDetailsRoute(int itemID, bool isRestaurant) => '$itemDetails?id=$itemID&page=${isRestaurant ? 'restaurant' : 'item'}';
   static String getWalletRoute(bool fromWallet) => '$wallet?page=${fromWallet ? 'wallet' : 'loyalty_points'}';
   static String getReferAndEarnRoute() => '$referAndEarn';
+  static String getChatRoute({@required NotificationBody notificationBody, User user, int conversationID, int index, bool fromNotification}) {
+    String _notificationBody = 'null';
+    if(notificationBody != null) {
+      _notificationBody = base64Encode(utf8.encode(jsonEncode(notificationBody.toJson())));
+    }
+    String _user = 'null';
+    if(user != null) {
+      _user = base64Encode(utf8.encode(jsonEncode(user.toJson())));
+    }
+    return '$messages?notification=$_notificationBody&user=$_user&conversation_id=$conversationID&index=$index&from=${fromNotification.toString()}';
+  }
+  static String getConversationRoute() => '$conversation';
+  static String getRestaurantRegistrationRoute() => '$restaurantRegistration';
+  static String getDeliverymanRegistrationRoute() => '$deliveryManRegistration';
 
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => getRoute(DashboardScreen(pageIndex: 0))),
-    GetPage(name: splash, page: () => SplashScreen(orderID: Get.parameters['id'] == 'null' ? null : Get.parameters['id'])),
+    GetPage(name: splash, page: () {
+      NotificationBody _data;
+      if(Get.parameters['data'] != 'null') {
+        List<int> _decode = base64Decode(Get.parameters['data'].replaceAll(' ', '+'));
+        _data = NotificationBody.fromJson(jsonDecode(utf8.decode(_decode)));
+      }
+      return SplashScreen(body: _data);
+    }),
     GetPage(name: language, page: () => ChooseLanguageScreen(fromMenu: Get.parameters['page'] == 'menu')),
     GetPage(name: onBoarding, page: () => OnBoardingScreen()),
     GetPage(name: signIn, page: () => SignInScreen(
@@ -252,12 +291,12 @@ class RouteHelper {
       ));
     }),
     GetPage(name: orderDetails, page: () {
-      return getRoute(Get.arguments != null ? Get.arguments : OrderDetailsScreen(orderId: int.parse(Get.parameters['id'] ?? '0'), orderModel: null));
+      return getRoute(Get.arguments != null ? Get.arguments : OrderDetailsScreen(orderId: int.parse(Get.parameters['id'] ?? '0'), orderModel: null, fromNotification: Get.parameters['from'] == 'true'));
     }),
     GetPage(name: profile, page: () => getRoute(ProfileScreen())),
     GetPage(name: updateProfile, page: () => getRoute(UpdateProfileScreen())),
     GetPage(name: coupon, page: () => getRoute(CouponScreen())),
-    GetPage(name: notification, page: () => getRoute(NotificationScreen())),
+    GetPage(name: notification, page: () => getRoute(NotificationScreen(fromNotification: Get.parameters['from'] == 'true'))),
     GetPage(name: map, page: () {
       List<int> _decode = base64Decode(Get.parameters['address'].replaceAll(' ', '+'));
       AddressModel _data = AddressModel.fromJson(jsonDecode(utf8.decode(_decode)));
@@ -324,6 +363,23 @@ class RouteHelper {
     GetPage(name: itemDetails, page: () => getRoute(Get.arguments != null ? Get.arguments : ItemDetailsScreen(item: Item(id: int.parse(Get.parameters['id'])), inStorePage: Get.parameters['page'] == 'restaurant'))),
     GetPage(name: wallet, page: () => getRoute(WalletScreen(fromWallet: Get.parameters['page'] == 'wallet'))),
     GetPage(name: referAndEarn, page: () => getRoute(ReferAndEarnScreen())),
+    GetPage(name: messages, page: () {
+      NotificationBody _notificationBody;
+      if(Get.parameters['notification'] != 'null') {
+        _notificationBody = NotificationBody.fromJson(jsonDecode(utf8.decode(base64Url.decode(Get.parameters['notification'].replaceAll(' ', '+')))));
+      }
+      User _user;
+      if(Get.parameters['user'] != 'null') {
+        _user = User.fromJson(jsonDecode(utf8.decode(base64Url.decode(Get.parameters['user'].replaceAll(' ', '+')))));
+      }
+      return getRoute(ChatScreen(
+        notificationBody: _notificationBody, user: _user, index: Get.parameters['index'] != 'null' ? int.parse(Get.parameters['index']) : null, fromNotification: Get.parameters['from'] == 'true',
+        conversationID: (Get.parameters['conversation_id'] != null && Get.parameters['conversation_id'] != 'null') ? int.parse(Get.parameters['conversation_id']) : null,
+      ));
+    }),
+    GetPage(name: conversation, page: () => ConversationScreen()),
+    GetPage(name: restaurantRegistration, page: () => StoreRegistrationScreen()),
+    GetPage(name: deliveryManRegistration, page: () => DeliveryManRegistrationScreen()),
   ];
 
   static getRoute(Widget navigateTo) {

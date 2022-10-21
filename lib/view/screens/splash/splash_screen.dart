@@ -1,20 +1,23 @@
 import 'dart:async';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:sixam_mart/controller/auth_controller.dart';
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/wishlist_controller.dart';
+import 'package:sixam_mart/data/model/body/notification_body.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/app_constants.dart';
+import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/view/base/no_internet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
-  final String orderID;
-  SplashScreen({@required this.orderID});
+  final NotificationBody body;
+  SplashScreen({@required this.body});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -73,8 +76,14 @@ class _SplashScreenState extends State<SplashScreen> {
           if(AppConstants.APP_VERSION < _minimumVersion || Get.find<SplashController>().configModel.maintenanceMode) {
             Get.offNamed(RouteHelper.getUpdateRoute(AppConstants.APP_VERSION < _minimumVersion));
           }else {
-            if(widget.orderID != null) {
-              Get.offNamed(RouteHelper.getOrderDetailsRoute(int.parse(widget.orderID)));
+            if(widget.body != null) {
+              if (widget.body.notificationType == NotificationType.order) {
+                Get.offNamed(RouteHelper.getOrderDetailsRoute(widget.body.orderId, fromNotification: true));
+              }else if(widget.body.notificationType == NotificationType.general){
+                Get.offNamed(RouteHelper.getNotificationRoute(fromNotification: true));
+              }else {
+                Get.offNamed(RouteHelper.getChatRoute(notificationBody: widget.body, conversationID: widget.body.conversationId, fromNotification: true));
+              }
             }else {
               if (Get.find<AuthController>().isLoggedIn()) {
                 Get.find<AuthController>().updateToken();
@@ -82,23 +91,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 if (Get.find<LocationController>().getUserAddress() != null) {
                   Get.offNamed(RouteHelper.getInitialRoute());
                 } else {
-                  // Get.offNamed(RouteHelper.getAccessLocationRoute('splash'));
-                  Get.offNamed(RouteHelper.getInitialRoute());
-
+                  Get.offNamed(RouteHelper.getAccessLocationRoute('splash'));
                 }
               } else {
                 if (Get.find<SplashController>().showIntro()) {
                   if(AppConstants.languages.length > 1) {
-                    // Get.offNamed(RouteHelper.getLanguageRoute('splash'));
-                    Get.toNamed(RouteHelper.getSignUpRoute());
+                    Get.offNamed(RouteHelper.getLanguageRoute('splash'));
                   }else {
-                    // Get.offNamed(RouteHelper.getOnBoardingRoute());
-                    Get.toNamed(RouteHelper.getSignUpRoute());
+                    Get.offNamed(RouteHelper.getOnBoardingRoute());
                   }
                 } else {
-                  // Get.offNamed(RouteHelper.getSignInRoute(RouteHelper.splash));
-                  Get.toNamed(RouteHelper.getSignUpRoute());
-                  // Navigator.pushReplacementNamed(context, RouteHelper.getInitialRoute());
+                  Get.offNamed(RouteHelper.getSignInRoute(RouteHelper.splash));
                 }
               }
             }
@@ -111,21 +114,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     Get.find<SplashController>().initSharedData();
+    if(Get.find<LocationController>().getUserAddress() != null && Get.find<LocationController>().getUserAddress().zoneIds == null) {
+      Get.find<AuthController>().clearSharedAddress();
+    }
 
     return Scaffold(
       key: _globalKey,
-      backgroundColor: Color(0xFF1a893c),
+      backgroundColor: Color(0xff007f36),
+
       body: GetBuilder<SplashController>(builder: (splashController) {
         return Center(
-
           child: splashController.hasConnection ? Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(Images.logo, width: 200),
-              /*SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-              Text(AppConstants.APP_NAME, style: robotoMedium.copyWith(fontSize: 25)),*/
+              SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+              // Text(AppConstants.APP_NAME, style: robotoMedium.copyWith(fontSize: 25)),
             ],
-          ) : NoInternetScreen(child: SplashScreen(orderID: widget.orderID)),
+          ) : NoInternetScreen(child: SplashScreen(body: widget.body)),
         );
       }),
     );

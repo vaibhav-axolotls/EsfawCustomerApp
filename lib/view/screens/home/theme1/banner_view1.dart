@@ -38,7 +38,7 @@ class BannerView1 extends StatelessWidget {
                   autoPlay: true,
                   enlargeCenterPage: true,
                   disableCenter: true,
-                  viewportFraction: 0.95,
+                  viewportFraction: 0.96,
                   autoPlayInterval: Duration(seconds: 7),
                   onPageChanged: (index, reason) {
                     bannerController.setCurrentIndex(index, true);

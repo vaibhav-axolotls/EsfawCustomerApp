@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:image_picker/image_picker.dart';
 import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/data/api/api_client.dart';
+import 'package:sixam_mart/data/model/body/delivery_man_body.dart';
+import 'package:sixam_mart/data/model/body/store_body.dart';
 import 'package:sixam_mart/data/model/body/signup_body.dart';
 import 'package:sixam_mart/data/model/body/social_log_in_body.dart';
 import 'package:sixam_mart/util/app_constants.dart';
@@ -177,5 +180,19 @@ class AuthRepo {
     await sharedPreferences.remove(AppConstants.USER_PASSWORD);
     await sharedPreferences.remove(AppConstants.USER_COUNTRY_CODE);
     return await sharedPreferences.remove(AppConstants.USER_NUMBER);
+  }
+
+  Future<Response> getZoneList() async {
+    return await apiClient.getData(AppConstants.ZONE_LIST_URI);
+  }
+
+  Future<Response> registerStore(StoreBody store, XFile logo, XFile cover) async {
+    return apiClient.postMultipartData(
+      AppConstants.STORE_REGISTER_URI, store.toJson(), [MultipartBody('logo', logo), MultipartBody('cover_photo', cover)],
+    );
+  }
+
+  Future<Response> registerDeliveryMan(DeliveryManBody deliveryManBody, List<MultipartBody> multiParts) async {
+    return apiClient.postMultipartData(AppConstants.DM_REGISTER_URI, deliveryManBody.toJson(), multiParts);
   }
 }

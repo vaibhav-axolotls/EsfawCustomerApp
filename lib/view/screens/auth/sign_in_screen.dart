@@ -106,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                     return Column(children: [
 
-                      Image.asset(Images.logo, width: 200),
+                      Image.asset(Images.logo_new, width: 200),
                       // SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                       // Center(child: Text(AppConstants.APP_NAME, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge))),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
@@ -150,17 +150,17 @@ class _SignInScreenState extends State<SignInScreen> {
                           ]),
                           Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_LARGE), child: Divider(height: 1)),
 
-                          CustomTextField(
-                            hintText: 'password'.tr,
-                            controller: _passwordController,
-                            focusNode: _passwordFocus,
-                            inputAction: TextInputAction.done,
-                            inputType: TextInputType.visiblePassword,
-                            prefixIcon: Images.lock,
-                            isPassword: true,
-                            onSubmit: (text) => (GetPlatform.isWeb && authController.acceptTerms)
-                                ? _login(authController, _countryDialCode) : null,
-                          ),
+                          // CustomTextField(
+                          //   hintText: 'password'.tr,
+                          //   controller: _passwordController,
+                          //   focusNode: _passwordFocus,
+                          //   inputAction: TextInputAction.done,
+                          //   inputType: TextInputType.visiblePassword,
+                          //   prefixIcon: Images.lock,
+                          //   isPassword: true,
+                          //   onSubmit: (text) => (GetPlatform.isWeb && authController.acceptTerms)
+                          //       ? _login(authController, _countryDialCode) : null,
+                          // ),
 
                         ]),
                       ),
@@ -206,7 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                       // SocialLoginWidget(),
 
-                      GuestButton(),
+                      //GuestButton(),
 
                     ]);
                   }),

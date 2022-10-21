@@ -3,6 +3,7 @@ import 'package:sixam_mart/controller/banner_controller.dart';
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
+import 'package:sixam_mart/controller/wishlist_controller.dart';
 import 'package:sixam_mart/data/api/api_checker.dart';
 import 'package:sixam_mart/data/api/api_client.dart';
 import 'package:sixam_mart/data/model/response/config_model.dart';
@@ -29,6 +30,7 @@ class SplashController extends GetxController implements GetxService {
   Map<String, dynamic> _data = Map();
   String _htmlText;
   bool _isLoading = false;
+  int _selectedModuleIndex = 0;
 
   ConfigModel get configModel => _configModel;
   DateTime get currentTime => DateTime.now();
@@ -39,6 +41,12 @@ class SplashController extends GetxController implements GetxService {
   List<ModuleModel> get moduleList => _moduleList;
   String get htmlText => _htmlText;
   bool get isLoading => _isLoading;
+  int get selectedModuleIndex => _selectedModuleIndex;
+
+  void selectModuleIndex(int index) {
+    _selectedModuleIndex = index;
+    update();
+  }
 
   Future<bool> getConfigData() async {
     _hasConnection = true;
@@ -92,6 +100,9 @@ class SplashController extends GetxController implements GetxService {
     splashRepo.setModule(module);
     if(module != null) {
       _configModel.moduleConfig.module = Module.fromJson(_data['module_config'][module.moduleType]);
+    }
+    if(Get.find<AuthController>().isLoggedIn()) {
+      Get.find<WishListController>().getWishList();
     }
     if(notify) {
       update();

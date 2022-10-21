@@ -63,7 +63,7 @@ class ItemsView extends StatelessWidget {
         padding: padding,
         itemBuilder: (context, index) {
           return showTheme1Store ? StoreWidget(store: stores[index], index: index, inStore: inStorePage) : ItemWidget(
-            isStore: isStore, item: isStore ? null : items[index],
+            isStore: isStore, item: isStore ? null : items[index], isFeatured: isFeatured,
             store: isStore ? stores[index] : null, index: index, length: _length, isCampaign: isCampaign,
             inStore: inStorePage,
           );

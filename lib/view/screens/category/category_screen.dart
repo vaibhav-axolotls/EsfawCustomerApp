@@ -29,13 +29,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
         width: Dimensions.WEB_MAX_WIDTH,
         child: GetBuilder<CategoryController>(builder: (catController) {
           return catController.categoryList != null ? catController.categoryList.length > 0 ? GridView.builder(
+
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: ResponsiveHelper.isDesktop(context) ? 6 : ResponsiveHelper.isTab(context) ? 4 : 3,
-              childAspectRatio: (1/1),
-              mainAxisSpacing: Dimensions.PADDING_SIZE_SMALL,
-              crossAxisSpacing: Dimensions.PADDING_SIZE_SMALL,
+              crossAxisCount: 3,
+              mainAxisSpacing: 6,
+              crossAxisSpacing: 17,
+              childAspectRatio: (1 / 1),
             ),
             padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
             itemCount: catController.categoryList.length,
@@ -56,7 +57,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
                       child: CustomImage(
-                        height: 65, width: 90, fit: BoxFit.cover,
+                        height: 78, width: 96, fit: BoxFit.cover,
                         image: '${Get.find<SplashController>().configModel.baseUrls.categoryImageUrl}/${catController.categoryList[index].image}',
                       ),
                     ),

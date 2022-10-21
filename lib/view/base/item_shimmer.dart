@@ -32,7 +32,7 @@ class ItemShimmer extends StatelessWidget {
               child: Row(children: [
 
                 Container(
-                  height: _desktop ? 120 : 65, width: _desktop ? 120 : 80,
+                  height: _desktop ? 120 : 85, width: _desktop ? 120 : 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
                     color: Colors.grey[300],

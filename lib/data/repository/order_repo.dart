@@ -13,8 +13,8 @@ class OrderRepo {
   final SharedPreferences sharedPreferences;
   OrderRepo({@required this.apiClient, @required this.sharedPreferences});
 
-  Future<Response> getRunningOrderList(int offset) async {
-    return await apiClient.getData('${AppConstants.RUNNING_ORDER_LIST_URI}?offset=$offset&limit=10');
+  Future<Response> getRunningOrderList(int offset, bool fromDashBoard) async {
+    return await apiClient.getData('${AppConstants.RUNNING_ORDER_LIST_URI}?offset=$offset&limit=${fromDashBoard ? 20 : 10}');
   }
 
   Future<Response> getHistoryOrderList(int offset) async {

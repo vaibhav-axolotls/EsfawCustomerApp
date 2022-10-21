@@ -13,7 +13,7 @@ import 'package:sixam_mart/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(languages: null, orderID: null));
+    await tester.pumpWidget(MyApp(languages: null, body: null));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

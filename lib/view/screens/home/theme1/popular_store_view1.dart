@@ -87,7 +87,7 @@ class PopularStoreView1 extends StatelessWidget {
                             child: CustomImage(
                               image: '${Get.find<SplashController>().configModel.baseUrls.storeCoverPhotoUrl}'
                                   '/${_storeList[index].coverPhoto}',
-                              height: 90, width: 200, fit: BoxFit.cover,
+                              height: 80, width: 200, fit: BoxFit.cover,
                             ),
                           ),
                           DiscountTag(

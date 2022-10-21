@@ -38,14 +38,6 @@ class DeliveryManWidget extends StatelessWidget {
             style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
           ),
           subtitle: RatingBar(rating: deliveryMan.avgRating, size: 15, ratingCount: deliveryMan.ratingCount ?? 0),
-          trailing: InkWell(
-            onTap: () => launchUrlString('tel:${deliveryMan.phone}', mode: LaunchMode.externalApplication),
-            child: Container(
-              padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).disabledColor.withOpacity(0.2)),
-              child: Icon(Icons.call_outlined),
-            ),
-          ),
         ),
       ]),
     );

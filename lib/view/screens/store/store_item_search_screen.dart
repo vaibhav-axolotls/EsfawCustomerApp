@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
@@ -7,6 +8,7 @@ import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/view/base/footer_view.dart';
 import 'package:sixam_mart/view/base/item_view.dart';
 import 'package:sixam_mart/view/base/paginated_list_view.dart';
+import 'package:sixam_mart/view/screens/store/widget/bottom_cart_widget.dart';
 
 class StoreItemSearchScreen extends StatefulWidget {
   final String storeID;
@@ -99,11 +101,14 @@ class _StoreItemSearchScreenState extends State<StoreItemSearchScreen> {
               type: storeController.searchText.isNotEmpty ? storeController.searchType : null,
               inStorePage: true, onVegFilterTap: (String type) {
               storeController.getStoreSearchItemList(storeController.searchText, widget.storeID, 1, type);
-            },
-            ),
+            }),
           ))),
         );
       }),
+
+      bottomNavigationBar: GetBuilder<CartController>(builder: (cartController) {
+        return cartController.cartList.length > 0 && !ResponsiveHelper.isDesktop(context) ? BottomCartWidget() : SizedBox();
+      })
 
     );
   }

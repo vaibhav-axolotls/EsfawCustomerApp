@@ -16,7 +16,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 class TrackDetailsView extends StatelessWidget {
   final String status;
   final OrderModel track;
-  TrackDetailsView({@required this.track, @required this.status});
+  final Function callback;
+  TrackDetailsView({@required this.track, @required this.status, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +92,7 @@ class TrackDetailsView extends StatelessWidget {
         ) : Column(children: [
           Image.asset(Images.route, height: 20, width: 20, color: Theme.of(context).primaryColor),
           Text(
-            '$_distance ${'km'.tr}',
+            '${_distance.toStringAsFixed(2)} ${'km'.tr}',
             style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
           ),
           SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
@@ -141,6 +142,19 @@ class TrackDetailsView extends StatelessWidget {
                 'call'.tr,
                 style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).cardColor),
               ),
+            ),
+          ),
+          SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+
+          InkWell(
+            onTap: callback,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: Get.context.width >= 1300 ? 7 : Dimensions.PADDING_SIZE_EXTRA_SMALL, horizontal: Dimensions.PADDING_SIZE_SMALL),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                color: Colors.green,
+              ),
+              child: Icon(Icons.chat, size: 12, color: Theme.of(context).cardColor),
             ),
           ),
         ]),

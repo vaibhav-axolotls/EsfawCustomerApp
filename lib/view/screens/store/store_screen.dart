@@ -1,3 +1,4 @@
+import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/category_controller.dart';
 import 'package:sixam_mart/controller/localization_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
@@ -11,7 +12,6 @@ import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
-import 'package:sixam_mart/view/base/cart_widget.dart';
 import 'package:sixam_mart/view/base/custom_image.dart';
 import 'package:sixam_mart/view/base/footer_view.dart';
 import 'package:sixam_mart/view/base/item_view.dart';
@@ -21,6 +21,8 @@ import 'package:sixam_mart/view/base/web_menu_bar.dart';
 import 'package:sixam_mart/view/screens/store/widget/store_description_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'widget/bottom_cart_widget.dart';
 
 class StoreScreen extends StatefulWidget {
   final Store store;
@@ -117,12 +119,12 @@ class _StoreScreenState extends State<StoreScreen> {
                   ),
                 ),
                 actions: [IconButton(
-                  onPressed: () => Get.toNamed(RouteHelper.getCartRoute()),
+                  onPressed: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id)),
                   icon: Container(
                     height: 50, width: 50,
                     decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColor),
                     alignment: Alignment.center,
-                    child: CartWidget(color: Theme.of(context).cardColor, size: 15, fromStore: true),
+                    child: Icon(Icons.search, size: 20, color: Theme.of(context).cardColor),
                   ),
                 )],
               ),
@@ -249,6 +251,10 @@ class _StoreScreenState extends State<StoreScreen> {
           ) : Center(child: CircularProgressIndicator());
         });
       }),
+
+      bottomNavigationBar: GetBuilder<CartController>(builder: (cartController) {
+        return cartController.cartList.length > 0 && !ResponsiveHelper.isDesktop(context) ? BottomCartWidget() : SizedBox();
+      })
     );
   }
 }

@@ -1,7 +1,9 @@
 class Images {
-  static const String logo = 'assets/image/logo.png';
+  static const String logo = 'assets/image/logo1.gif';
   static const String logo_new = 'assets/image/logo_new.jpg';
+  static const String static_banner = 'assets/image/esfamart.gif';
   static const String placeholder = 'assets/image/placeholder.jpg';
+  static const String notification_placeholder = 'assets/image/notification_placeholder.jpg';
   static const String arabic = 'assets/image/arabic.png';
   static const String call = 'assets/image/call.png';
   static const String checked = 'assets/image/checked.png';
@@ -79,4 +81,12 @@ class Images {
   static const String refer_code = 'assets/image/refer_code.png';
   static const String gift_box1 = 'assets/image/gift_box1.gif';
   static const String gift_box = 'assets/image/giftbox.gif';
+  static const String chat = 'assets/image/chat.png';
+  static const String image = 'assets/image/image.png';
+  static const String send = 'assets/image/send.png';
+  static const String on_the_way_gif = 'assets/image/on_the_way.gif';
+  static const String processing_gif = 'assets/image/processing.gif';
+  static const String confirmed_gif = 'assets/image/confirmed.gif';
+  static const String pending_gif = 'assets/image/pending.gif';
+  static const String handover_gif = 'assets/image/handover.gif';
 }

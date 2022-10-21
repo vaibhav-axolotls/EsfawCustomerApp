@@ -7,6 +7,7 @@ import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/theme_controller.dart';
 import 'package:sixam_mart/controller/wishlist_controller.dart';
+import 'package:sixam_mart/data/model/body/notification_body.dart';
 import 'package:sixam_mart/helper/notification_helper.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
@@ -31,15 +32,23 @@ Future<void> main() async {
   }
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
+  if(GetPlatform.isWeb){
+    await Firebase.initializeApp(options: FirebaseOptions(
+      apiKey: 'AIzaSyDFN-73p8zKVZbA0i5DtO215XzAb-xuGSE',
+      appId: '1:1000163153346:web:4f702a4b5adbd5c906b25b',
+      messagingSenderId: 'G-L1GNL2YV61',
+      projectId: 'ammart-8885e',
+    ));
+  }
   await Firebase.initializeApp();
   Map<String, Map<String, String>> _languages = await di.init();
 
-  int _orderID;
+  NotificationBody _body;
   try {
     if (GetPlatform.isMobile) {
       final RemoteMessage remoteMessage = await FirebaseMessaging.instance.getInitialMessage();
       if (remoteMessage != null) {
-        _orderID = remoteMessage.notification.titleLocKey != null ? int.parse(remoteMessage.notification.titleLocKey) : null;
+        _body = NotificationHelper.convertNotification(remoteMessage.data);
       }
       await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
@@ -54,13 +63,13 @@ Future<void> main() async {
   //     version: "v9.0",
   //   );
   // }
-  runApp(MyApp(languages: _languages, orderID: _orderID));
+  runApp(MyApp(languages: _languages, body: _body));
 }
 
 class MyApp extends StatelessWidget {
   final Map<String, Map<String, String>> languages;
-  final int orderID;
-  MyApp({@required this.languages, @required this.orderID});
+  final NotificationBody body;
+  MyApp({@required this.languages, @required this.body});
 
   void _route() {
     Get.find<SplashController>().getConfigData().then((bool isSuccess) async {
@@ -100,7 +109,7 @@ class MyApp extends StatelessWidget {
             locale: localizeController.locale,
             translations: Messages(languages: languages),
             fallbackLocale: Locale(AppConstants.languages[0].languageCode, AppConstants.languages[0].countryCode),
-            initialRoute: GetPlatform.isWeb ? RouteHelper.getInitialRoute() : RouteHelper.getSplashRoute(orderID),
+            initialRoute: GetPlatform.isWeb ? RouteHelper.getInitialRoute() : RouteHelper.getSplashRoute(body),
             getPages: RouteHelper.routes,
             defaultTransition: Transition.topLevel,
             transitionDuration: Duration(milliseconds: 500),

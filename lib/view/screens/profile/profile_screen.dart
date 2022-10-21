@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           mainWidget: SingleChildScrollView(physics: BouncingScrollPhysics(), child: FooterView(minHeight:_isLoggedIn ? 0.6 : 0.35,
             child: Center(child: Container(
-              width: Dimensions.WEB_MAX_WIDTH, color: Theme.of(context).cardColor,
+              width: Dimensions.WEB_MAX_WIDTH, height: context.height, color: Theme.of(context).cardColor,
               padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
               child: Column(children: [
 
@@ -80,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ]) : SizedBox(),
 
                 SizedBox(height: _showWalletCard ? Dimensions.PADDING_SIZE_SMALL : 0),
-                _showWalletCard ? Row(children: [
+                (_showWalletCard && _isLoggedIn) ? Row(children: [
                   Get.find<SplashController>().configModel.customerWalletStatus == 1 ? ProfileCard(
                     title: 'wallet_amount'.tr,
                     data: PriceConverter.convertPrice(userController.userInfoModel.walletBalance),

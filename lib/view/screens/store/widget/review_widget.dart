@@ -7,6 +7,7 @@ import 'package:sixam_mart/view/base/custom_image.dart';
 import 'package:sixam_mart/view/base/rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sixam_mart/view/screens/store/widget/review_dialog.dart';
 
 class ReviewWidget extends StatelessWidget {
   final ReviewModel review;
@@ -15,44 +16,50 @@ class ReviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return InkWell(
+      onTap: () => Get.dialog(ReviewDialog(review: review)),
+      child: Column(children: [
 
-      Row(children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        ClipOval(
-          child: CustomImage(
-            image: '${Get.find<SplashController>().configModel.baseUrls.itemImageUrl}/${review.itemImage ?? ''}',
-            height: 60, width: 60, fit: BoxFit.cover,
+          ClipOval(
+            child: CustomImage(
+              image: '${Get.find<SplashController>().configModel.baseUrls.itemImageUrl}/${review.itemImage ?? ''}',
+              height: 60, width: 60, fit: BoxFit.cover,
+            ),
           ),
-        ),
-        SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+          SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
 
-        Expanded(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-          Text(
-            review.itemName, maxLines: 1, overflow: TextOverflow.ellipsis,
-            style: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall),
-          ),
+            Text(
+              review.itemName, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall),
+            ),
 
-          RatingBar(rating: review.rating.toDouble(), ratingCount: null, size: 15),
+            RatingBar(rating: review.rating.toDouble(), ratingCount: null, size: 15),
 
-          Text(
-            review.customerName ?? '',
-            maxLines: 1, overflow: TextOverflow.ellipsis,
-            style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall),
-          ),
+            Text(
+              review.customerName ?? '',
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall),
+            ),
 
-          Text(review.comment, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor)),
+            Text(
+              review.comment, maxLines: 2, overflow: TextOverflow.ellipsis,
+              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+            ),
 
-        ])),
+          ])),
+
+        ]),
+
+        (hasDivider && ResponsiveHelper.isMobile(context)) ? Padding(
+          padding: EdgeInsets.only(left: 70),
+          child: Divider(color: Theme.of(context).disabledColor),
+        ) : SizedBox(),
 
       ]),
-
-      (hasDivider && ResponsiveHelper.isMobile(context)) ? Padding(
-        padding: EdgeInsets.only(left: 70),
-        child: Divider(color: Theme.of(context).disabledColor),
-      ) : SizedBox(),
-
-    ]);
+    );
   }
 }

@@ -30,7 +30,7 @@ class CategoryView extends StatelessWidget {
                   height: 85,
                   child: categoryController.categoryList != null ? ListView.builder(
                     controller: _scrollController,
-                    itemCount: categoryController.categoryList.length > 15 ? 15 : categoryController.categoryList.length,
+                    itemCount: categoryController.categoryList.length > 8 ? 8 : categoryController.categoryList.length,
                     padding: EdgeInsets.only(left: Dimensions.PADDING_SIZE_SMALL),
                     physics: BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
@@ -106,6 +106,7 @@ class CategoryView extends StatelessWidget {
         ],
       );
     });
+
   }
 }
 

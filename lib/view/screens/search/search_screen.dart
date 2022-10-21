@@ -1,4 +1,5 @@
 import 'package:sixam_mart/controller/auth_controller.dart';
+import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/search_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
@@ -16,6 +17,7 @@ import 'package:sixam_mart/view/screens/search/widget/search_field.dart';
 import 'package:sixam_mart/view/screens/search/widget/search_result_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sixam_mart/view/screens/store/widget/bottom_cart_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   final String queryText;
@@ -184,6 +186,10 @@ class _SearchScreenState extends State<SearchScreen> {
             ]);
           }),
         )),
+
+          bottomNavigationBar: GetBuilder<CartController>(builder: (cartController) {
+            return cartController.cartList.length > 0 && !ResponsiveHelper.isDesktop(context) ? BottomCartWidget() : SizedBox();
+          })
       ),
     );
   }

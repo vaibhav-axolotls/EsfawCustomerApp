@@ -36,6 +36,10 @@ class DateConverter {
     return DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').parse(dateTime);
   }
 
+  static String isoStringToLocalString(String dateTime) {
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(dateTime).toLocal());
+  }
+
   static String isoStringToDateTimeString(String dateTime) {
     return DateFormat('dd MMM yyyy  ${_timeFormatter()}').format(isoStringToLocalDate(dateTime));
   }
@@ -111,6 +115,10 @@ class DateConverter {
       _type = 'hour';
     }
     return '$_firstValue-$_secondValue ${_type.tr}';
+  }
+
+  static String localDateToIsoStringAMPM(DateTime dateTime) {
+    return DateFormat('${_timeFormatter()} | d-MMM-yyyy ').format(dateTime.toLocal());
   }
 
 }

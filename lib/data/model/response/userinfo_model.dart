@@ -1,3 +1,5 @@
+import 'package:sixam_mart/data/model/response/conversation_model.dart';
+
 class UserInfoModel {
   int id;
   String fName;
@@ -11,6 +13,7 @@ class UserInfoModel {
   double walletBalance;
   int loyaltyPoint;
   String refCode;
+  User userInfo;
 
   UserInfoModel(
       {this.id,
@@ -24,7 +27,8 @@ class UserInfoModel {
         this.memberSinceDays,
         this.walletBalance,
         this.loyaltyPoint,
-        this.refCode});
+        this.refCode,
+        this.userInfo});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -39,6 +43,7 @@ class UserInfoModel {
     walletBalance = json['wallet_balance'].toDouble();
     loyaltyPoint = json['loyalty_point'];
     refCode = json['ref_code'];
+    userInfo = json['userinfo'] != null ? new User.fromJson(json['userinfo']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +60,9 @@ class UserInfoModel {
     data['wallet_balance'] = this.walletBalance;
     data['loyalty_point'] = this.loyaltyPoint;
     data['ref_code'] = this.refCode;
+    if (this.userInfo != null) {
+      data['user`info'] = this.userInfo.toJson();
+    }
     return data;
   }
 }

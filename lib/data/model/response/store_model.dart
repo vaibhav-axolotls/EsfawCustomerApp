@@ -64,6 +64,7 @@ class Store {
   int orderPlaceToScheduleInterval;
   Discount discount;
   List<Schedules> schedules;
+  int vendorId;
 
   Store(
       {this.id,
@@ -99,6 +100,7 @@ class Store {
         this.orderPlaceToScheduleInterval,
         this.discount,
         this.schedules,
+        this.vendorId,
       });
 
   Store.fromJson(Map<String, dynamic> json) {
@@ -125,7 +127,7 @@ class Store {
     deliveryCharge = json['delivery_charge'].toDouble();
     open = json['open'];
     active = json['active'];
-    featured = json['featured'];
+    featured = int.parse(json['featured'].toString());
     zoneId = json['zone_id'];
     deliveryTime = json['delivery_time'];
     veg = json['veg'];
@@ -140,6 +142,7 @@ class Store {
         schedules.add(new Schedules.fromJson(v));
       });
     }
+    vendorId = json['vendor_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -181,6 +184,7 @@ class Store {
     if (this.schedules != null) {
       data['schedules'] = this.schedules.map((v) => v.toJson()).toList();
     }
+    data['vendor_id'] = this.vendorId;
     return data;
   }
 }

@@ -43,6 +43,8 @@ class OrderController extends GetxController implements GetxService {
   Uint8List _rawAttachment;
   double _tips = 0.0;
   int _selectedTips = -1;
+  bool _showBottomSheet = true;
+  bool _showOneOrder = true;
 
   PaginatedOrderModel get runningOrderModel => _runningOrderModel;
   PaginatedOrderModel get historyOrderModel => _historyOrderModel;
@@ -63,13 +65,27 @@ class OrderController extends GetxController implements GetxService {
   Uint8List get rawAttachment => _rawAttachment;
   double get tips => _tips;
   int get selectedTips => _selectedTips;
+  bool get showBottomSheet => _showBottomSheet;
+  bool get showOneOrder => _showOneOrder;
 
-  Future<void> getRunningOrders(int offset) async {
+  void showOrders(){
+    _showOneOrder = !_showOneOrder;
+    update();
+  }
+
+  void showRunningOrders(){
+    _showBottomSheet = !_showBottomSheet;
+    update();
+  }
+
+  Future<void> getRunningOrders(int offset, {bool isUpdate = false, bool fromDashBoard = false}) async {
     if(offset == 1) {
       _runningOrderModel = null;
-      update();
+      if(isUpdate) {
+        update();
+      }
     }
-    Response response = await orderRepo.getRunningOrderList(offset);
+    Response response = await orderRepo.getRunningOrderList(offset, fromDashBoard);
     if (response.statusCode == 200) {
       if (offset == 1) {
         _runningOrderModel = PaginatedOrderModel.fromJson(response.body);
@@ -84,10 +100,12 @@ class OrderController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getHistoryOrders(int offset) async {
+  Future<void> getHistoryOrders(int offset, {bool isUpdate = false}) async {
     if(offset == 1) {
       _historyOrderModel = null;
-      update();
+      if(isUpdate) {
+        update();
+      }
     }
     Response response = await orderRepo.getHistoryOrderList(offset);
     if (response.statusCode == 200) {
@@ -159,6 +177,22 @@ class OrderController extends GetxController implements GetxService {
       _trackModel = orderModel;
       _responseModel = ResponseModel(true, 'Successful');
     }
+    return _responseModel;
+  }
+
+  Future<ResponseModel> timerTrackOrder(String orderID) async {
+    _showCancelled = false;
+
+    Response response = await orderRepo.trackOrder(orderID);
+    if (response.statusCode == 200) {
+      _trackModel = OrderModel.fromJson(response.body);
+      _responseModel = ResponseModel(true, response.body.toString());
+    } else {
+      _responseModel = ResponseModel(false, response.statusText);
+      ApiChecker.checkApi(response);
+    }
+    update();
+
     return _responseModel;
   }
 
@@ -365,6 +399,9 @@ class OrderController extends GetxController implements GetxService {
 
   void updateTips(int index, {bool notify = true}) {
     _selectedTips = index;
+    if(_selectedTips == -1) {
+      _tips = 0;
+    }
     if(notify) {
       update();
     }

@@ -57,14 +57,15 @@ class StoreDescriptionView extends StatelessWidget {
               maxLines: 1, overflow: TextOverflow.ellipsis,
             )),
             SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
-            InkWell(
+
+            ResponsiveHelper.isDesktop(context) ? InkWell(
               onTap: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(store.id)),
               child: ResponsiveHelper.isDesktop(context) ? Container(
                 padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(Dimensions.RADIUS_DEFAULT), color: Theme.of(context).primaryColor),
                 child: Center(child: Icon(Icons.search, color: Colors.white)),
               ) : Icon(Icons.search, color: Theme.of(context).primaryColor),
-            ),
+            ) : SizedBox(),
             SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
             GetBuilder<WishListController>(builder: (wishController) {
               bool _isWished = wishController.wishStoreIdList.contains(store.id);

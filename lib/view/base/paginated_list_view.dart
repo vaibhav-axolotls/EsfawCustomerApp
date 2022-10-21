@@ -10,9 +10,11 @@ class PaginatedListView extends StatefulWidget {
   final int totalSize;
   final int offset;
   final Widget itemView;
+  final bool enabledPagination;
+  final bool reverse;
   const PaginatedListView({
     Key key, @required this.scrollController, @required this.onPaginate, @required this.totalSize,
-    @required this.offset, @required this.itemView,
+    @required this.offset, @required this.itemView, this.enabledPagination = true, this.reverse = false,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class _PaginatedListViewState extends State<PaginatedListView> {
 
     widget.scrollController?.addListener(() {
       if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent
-          && widget.totalSize != null && !_isLoading) {
+          && widget.totalSize != null && !_isLoading && widget.enabledPagination) {
         if(mounted && !ResponsiveHelper.isDesktop(context)) {
           _paginate();
         }
@@ -76,7 +78,7 @@ class _PaginatedListViewState extends State<PaginatedListView> {
 
     return Column(children: [
 
-      widget.itemView,
+      widget.reverse ? SizedBox() : widget.itemView,
 
       (ResponsiveHelper.isDesktop(context) && (widget.totalSize == null || _offset >= (widget.totalSize / 10).ceil() || _offsetList.contains(_offset+1))) ? SizedBox() : Center(child: Padding(
         padding: (_isLoading || ResponsiveHelper.isDesktop(context)) ? EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL) : EdgeInsets.zero,
@@ -93,6 +95,8 @@ class _PaginatedListViewState extends State<PaginatedListView> {
           ),
         ) : SizedBox(),
       )),
+
+      widget.reverse ? widget.itemView : SizedBox(),
 
     ]);
   }

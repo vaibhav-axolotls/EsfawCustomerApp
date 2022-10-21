@@ -7,14 +7,15 @@ class CustomImage extends StatelessWidget {
   final double height;
   final double width;
   final BoxFit fit;
-  CustomImage({@required this.image, this.height, this.width, this.fit = BoxFit.cover});
+  final bool isNotification;
+  CustomImage({@required this.image, this.height, this.width, this.fit = BoxFit.cover, this.isNotification = false});
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: image, height: height, width: width, fit: fit,
-      placeholder: (context, url) => Image.asset(Images.placeholder, height: height, width: width, fit: fit),
-      errorWidget: (context, url, error) => Image.asset(Images.placeholder, height: height, width: width, fit: fit),
+      placeholder: (context, url) => Image.asset(isNotification ? Images.notification_placeholder : Images.placeholder, height: height, width: width, fit: fit),
+      errorWidget: (context, url, error) => Image.asset(isNotification ? Images.notification_placeholder : Images.placeholder, height: height, width: width, fit: fit),
     );
   }
 }

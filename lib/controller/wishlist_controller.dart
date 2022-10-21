@@ -1,3 +1,4 @@
+import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/data/api/api_checker.dart';
 import 'package:sixam_mart/data/model/response/item_model.dart';
 import 'package:sixam_mart/data/model/response/store_model.dart';
@@ -68,17 +69,20 @@ class WishListController extends GetxController implements GetxService {
       update();
       response.body['item'].forEach((item) async {
         Item _item = Item.fromJson(item);
-        _wishItemList.add(_item);
-        _wishItemIdList.add(_item.id);
+        if(Get.find<SplashController>().module == null || Get.find<SplashController>().module.id == _item.moduleId) {
+          _wishItemList.add(_item);
+          _wishItemIdList.add(_item.id);
+        }
       });
       response.body['store'].forEach((store) async {
         Store _store;
         try{
           _store = Store.fromJson(store);
         }catch(e){}
-
-        _wishStoreList.add(_store);
-        _wishStoreIdList.add(_store.id);
+        if(_store != null && (Get.find<SplashController>().module == null || Get.find<SplashController>().module.id == _store.moduleId)) {
+          _wishStoreList.add(_store);
+          _wishStoreIdList.add(_store.id);
+        }
       });
     } else {
       ApiChecker.checkApi(response);

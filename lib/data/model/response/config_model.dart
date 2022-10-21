@@ -131,7 +131,7 @@ class ConfigModel {
     digitalPayment = json['digital_payment'];
     perKmShippingCharge = json['per_km_shipping_charge'].toDouble();
     minimumShippingCharge = json['minimum_shipping_charge'].toDouble();
-    freeDeliveryOver = json['free_delivery_over'] != null ? json['free_delivery_over'].toDouble() : null;
+   // freeDeliveryOver = json['free_delivery_over'] != null ? double.parse(json['free_delivery_over']): null;
     demo = json['demo'];
     maintenanceMode = json['maintenance_mode'];
     orderConfirmationModel = json['order_confirmation_model'];
@@ -267,6 +267,7 @@ class BaseUrls {
   String orderAttachmentUrl;
   String parcelCategoryImageUrl;
   String landingPageImageUrl;
+  String businessLogoUrl;
 
   BaseUrls(
       {this.itemImageUrl,
@@ -285,6 +286,7 @@ class BaseUrls {
         this.orderAttachmentUrl,
         this.parcelCategoryImageUrl,
         this.landingPageImageUrl,
+        this.businessLogoUrl,
       });
 
   BaseUrls.fromJson(Map<String, dynamic> json) {
@@ -304,6 +306,7 @@ class BaseUrls {
     orderAttachmentUrl = json['order_attachment_url'];
     parcelCategoryImageUrl = json['parcel_category_image_url'];
     landingPageImageUrl = json['landing_page_image_url'];
+    businessLogoUrl = json['business_logo_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -324,6 +327,7 @@ class BaseUrls {
     data['order_attachment_url'] = this.orderAttachmentUrl;
     data['parcel_category_image_url'] = this.parcelCategoryImageUrl;
     data['landing_page_image_url'] = this.landingPageImageUrl;
+    data['business_logo_url'] = this.businessLogoUrl;
     return data;
   }
 }

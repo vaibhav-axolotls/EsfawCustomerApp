@@ -43,7 +43,7 @@ class ItemImageView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         child: CustomImage(
                           image: '$_baseUrl/${_imageList[index]}',
-                          height: 200,
+                          height: 300,
                           width: MediaQuery.of(context).size.width,
                         ),
                       );

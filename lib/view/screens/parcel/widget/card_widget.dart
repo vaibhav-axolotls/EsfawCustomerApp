@@ -10,6 +10,7 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: context.width,
       padding: showCard ? EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL) : null,
       decoration: showCard ? BoxDecoration(
         color: Theme.of(context).cardColor,

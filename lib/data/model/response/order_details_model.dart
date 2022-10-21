@@ -44,7 +44,7 @@ class OrderDetailsModel {
     itemDetails = json['item_details'] != null
         ? new Item.fromJson(json['item_details'])
         : null;
-    if (json['variation'] != null) {
+    if (json['variation'] != null && json['variation'] != []) {
       variation = [];
       json['variation'].forEach((v) {
         variation.add(new Variation.fromJson(v));

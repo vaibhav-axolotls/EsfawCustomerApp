@@ -10,6 +10,7 @@ import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/view/base/custom_app_bar.dart';
+import 'package:sixam_mart/view/base/footer_view.dart';
 import 'package:sixam_mart/view/base/menu_drawer.dart';
 import 'package:sixam_mart/view/base/no_data_screen.dart';
 import 'package:sixam_mart/view/base/not_logged_in_screen.dart';
@@ -78,8 +79,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 },
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_DEFAULT),
-                  child: Center(
+                  padding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.isDesktop(context) ? 0.0 : Dimensions.PADDING_SIZE_DEFAULT),
+                  child: FooterView(
                     child: SizedBox(
                       width: Dimensions.WEB_MAX_WIDTH,
                       child: GetBuilder<WalletController>(

@@ -38,6 +38,9 @@ class _MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateM
     Menu(icon: Images.support, title: 'help_support'.tr, onTap: () {
       Get.offNamed(RouteHelper.getSupportRoute());
     }),
+    Menu(icon: Images.chat, title: 'live_chat'.tr, onTap: () {
+      Get.offNamed(RouteHelper.getConversationRoute());
+    }),
   ];
 
   static const _initialDelayTime = Duration(milliseconds: 200);
@@ -70,6 +73,19 @@ class _MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateM
         Get.offNamed(RouteHelper.getReferAndEarnRoute());
       }));
     }
+    if(Get.find<SplashController>().configModel.toggleDmRegistration) {
+      _menuList.add(Menu(
+        icon: Images.delivery_man_join, title: 'join_as_a_delivery_man'.tr,onTap: (){
+          Get.toNamed(RouteHelper.getDeliverymanRegistrationRoute());
+      }));
+    }
+    if(Get.find<SplashController>().configModel.toggleStoreRegistration) {
+      _menuList.add(Menu(
+        icon: Images.restaurant_join, title: Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
+          ? 'join_as_a_restaurant'.tr : 'join_as_a_store'.tr,
+        onTap: () => Get.toNamed(RouteHelper.getRestaurantRegistrationRoute()),
+      ));
+    }
     _menuList.add(Menu(icon: Images.log_out, title: Get.find<AuthController>().isLoggedIn() ? 'logout'.tr : 'sign_in'.tr, onTap: () {
       Get.back();
       if(Get.find<AuthController>().isLoggedIn()) {
@@ -77,12 +93,10 @@ class _MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateM
           Get.find<AuthController>().clearSharedData();
           Get.find<CartController>().clearCartList();
           Get.find<WishListController>().removeWishes();
-          Get.toNamed(RouteHelper.getSignUpRoute());
-          // Get.offAllNamed(RouteHelper.getSignInRoute(RouteHelper.splash));
+          Get.offAllNamed(RouteHelper.getSignInRoute(RouteHelper.splash));
         }), useSafeArea: false);
       }else {
         Get.find<WishListController>().removeWishes();
-        // Get.toNamed(RouteHelper.getSignUpRoute());
         Get.toNamed(RouteHelper.getSignInRoute(RouteHelper.main));
       }
     }));
@@ -179,7 +193,7 @@ class _MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateM
                         ),
                         SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
 
-                        Text(_menuList[index].title, style: robotoMedium),
+                        Expanded(child: Text(_menuList[index].title, style: robotoMedium, overflow: TextOverflow.ellipsis, maxLines: 1)),
 
                       ]),
                     ),

@@ -25,7 +25,7 @@ class FavItemView extends StatelessWidget {
                 width: Dimensions.WEB_MAX_WIDTH,
                 child: ItemsView(
                   isStore: isStore, items: wishController.wishItemList, stores: wishController.wishStoreList,
-                  noDataText: 'no_wish_data_found'.tr,
+                  noDataText: 'no_wish_data_found'.tr, isFeatured: true,
                 ),
               ),
             ),

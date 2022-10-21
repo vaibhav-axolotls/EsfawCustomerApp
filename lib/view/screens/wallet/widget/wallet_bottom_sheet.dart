@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
+import 'package:sixam_mart/controller/user_controller.dart';
 import 'package:sixam_mart/controller/wallet_controller.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
 import 'package:sixam_mart/util/dimensions.dart';
@@ -70,10 +71,18 @@ class _WalletBottomSheetState extends State<WalletBottomSheet> {
                       showCustomSnackBar('input_field_is_empty'.tr);
                     }else{
                       int _amount = int.parse(_amountController.text.trim());
-                      print(_amount);
+                      int point = Get.find<UserController>().userInfoModel.loyaltyPoint;
 
                       if(_amount <_minimumExchangePoint){
+                        if(Get.isBottomSheetOpen){
+                          Get.back();
+                        }
                         showCustomSnackBar('please_exchange_more_then'.tr + ' $_minimumExchangePoint ' + 'points'.tr);
+                      }else if(point < _amount){
+                        if(Get.isBottomSheetOpen){
+                          Get.back();
+                        }
+                        showCustomSnackBar('you_do_not_have_enough_point_to_exchange'.tr);
                       } else {
                         walletController.pointToWallet(_amount, widget.fromWallet);
                       }

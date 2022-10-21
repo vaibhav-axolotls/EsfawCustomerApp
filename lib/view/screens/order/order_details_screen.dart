@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:photo_view/photo_view.dart';
 import 'package:sixam_mart/controller/order_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
+import 'package:sixam_mart/data/model/body/notification_body.dart';
+import 'package:sixam_mart/data/model/response/conversation_model.dart';
 import 'package:sixam_mart/data/model/response/order_details_model.dart';
 import 'package:sixam_mart/data/model/response/order_model.dart';
 import 'package:sixam_mart/helper/date_converter.dart';
@@ -23,7 +25,6 @@ import 'package:sixam_mart/view/screens/order/widget/order_item_widget.dart';
 import 'package:sixam_mart/view/screens/parcel/widget/card_widget.dart';
 import 'package:sixam_mart/view/screens/parcel/widget/details_widget.dart';
 import 'package:sixam_mart/view/screens/review/rate_review_screen.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -31,14 +32,15 @@ import 'package:url_launcher/url_launcher_string.dart';
 class OrderDetailsScreen extends StatefulWidget {
   final OrderModel orderModel;
   final int orderId;
-  OrderDetailsScreen({@required this.orderModel, @required this.orderId});
+  final bool fromNotification;
+  OrderDetailsScreen({@required this.orderModel, @required this.orderId, this.fromNotification = false});
 
   @override
   _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  StreamSubscription _stream;
+  Timer _timer;
 
   void _loadData(BuildContext context, bool reload) async {
     await Get.find<OrderController>().trackOrder(widget.orderId.toString(), reload ? null : widget.orderModel, false);
@@ -48,40 +50,44 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     Get.find<OrderController>().getOrderDetails(widget.orderId.toString());
   }
 
+  void _startApiCall(){
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      Get.find<OrderController>().timerTrackOrder(widget.orderId.toString());
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _stream = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("onMessage on Details: ${message.data}");
-      _loadData(context, true);
-    });
-
     _loadData(context, false);
+    _startApiCall();
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _stream.cancel();
+    _timer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if(widget.orderModel == null) {
-          return Get.offAllNamed(RouteHelper.getInitialRoute());
-        }else {
+        if(widget.fromNotification) {
+          Get.offAllNamed(RouteHelper.getInitialRoute());
+          return true;
+        } else {
+          Get.back();
           return true;
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(title: 'order_details'.tr, onBackPressed: () {
-          if(widget.orderModel == null) {
+          if(widget.fromNotification) {
             Get.offAllNamed(RouteHelper.getInitialRoute());
-          }else {
+          } else {
             Get.back();
           }
         }),
@@ -251,7 +257,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       ? 'restaurant_details'.tr : 'store_details'.tr, style: robotoRegular),
                   SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                   (_parcel && _order.parcelCategory == null) ? Text(
-                    'no_parcel_category_data_found'.tr,
+                    'no_parcel_category_data_found'.tr, style: robotoMedium
                   ) : (!_parcel && _order.store == null) ? Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
                     child: Text('no_restaurant_data_found'.tr, maxLines: 1, overflow: TextOverflow.ellipsis,
                         style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
@@ -290,6 +296,33 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           }, icon: Icon(Icons.directions), label: Text('direction'.tr),
 
                     ) : SizedBox(),
+
+                    (!_parcel && _order.orderStatus != 'delivered' && _order.orderStatus != 'failed' && _order.orderStatus != 'canceled' && _order.orderStatus != 'refunded') ? TextButton.icon(
+                      onPressed: () async {
+                        await Get.toNamed(RouteHelper.getChatRoute(
+                          notificationBody: NotificationBody(orderId: _order.id, restaurantId: _order.store.vendorId),
+                          user: User(id: _order.store.vendorId, fName: _order.store.name, lName: '', image: _order.store.logo),
+                        ));
+                      },
+                      icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).primaryColor, size: 20),
+                      label: Text(
+                        'chat'.tr,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                      ),
+                    ) : SizedBox(),
+
+                    // !_parcel ? TextButton.icon(
+                    //   onPressed: () async {
+                    //     _timer?.cancel();
+                    //     await Get.toNamed(RouteHelper.getChatRoute(orderModel: widget.orderModel, isStore: true));
+                    //     _startApiCall();
+                    //   },
+                    //   icon: Icon(Icons.message, color: Theme.of(context).primaryColor, size: 20),
+                    //   label: Text(
+                    //     'message'.tr,
+                    //     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                    //   ),
+                    // ) : SizedBox(),
 
                   ]),
                 ])),
@@ -429,8 +462,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               child: CustomButton(
                 buttonText: parcel ? 'track_delivery'.tr : 'track_order'.tr,
                 margin: ResponsiveHelper.isDesktop(context) ? null : EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                onPressed: () {
-                  Get.toNamed(RouteHelper.getOrderTrackingRoute(order.id));
+                onPressed: () async{
+                  _timer?.cancel();
+                  await Get.toNamed(RouteHelper.getOrderTrackingRoute(order.id));
+                  _startApiCall();
                 },
               ),
             ) : SizedBox(),

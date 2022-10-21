@@ -1,4 +1,5 @@
 import 'package:sixam_mart/controller/order_controller.dart';
+import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
@@ -45,12 +46,12 @@ class PaymentFailedDialog extends StatelessWidget {
 
           GetBuilder<OrderController>(builder: (orderController) {
             return !orderController.isLoading ? Column(children: [
-              CustomButton(
+              Get.find<SplashController>().configModel.cashOnDelivery ? CustomButton(
                 buttonText: 'switch_to_cash_on_delivery'.tr,
                 onPressed: () => orderController.switchToCOD(orderID),
                 radius: Dimensions.RADIUS_SMALL, height: 40,
-              ),
-              SizedBox(width: Dimensions.PADDING_SIZE_LARGE),
+              ) : SizedBox(),
+              SizedBox(width: Get.find<SplashController>().configModel.cashOnDelivery ? Dimensions.PADDING_SIZE_LARGE : 0),
               TextButton(
                 onPressed: () {
                   Get.offAllNamed(RouteHelper.getInitialRoute());

@@ -211,7 +211,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                   Expanded(child: Scrollbar(child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                    padding: EdgeInsets.all(ResponsiveHelper.isDesktop(context) ? 0.0 : Dimensions.PADDING_SIZE_SMALL),
                     child: FooterView(child: SizedBox(
                       width: Dimensions.WEB_MAX_WIDTH,
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -653,9 +653,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if(widget.fromCart) {
         Get.find<CartController>().clearCartList();
       }
+      if(!Get.find<OrderController>().showBottomSheet){
+        Get.find<OrderController>().showRunningOrders();
+      }
       Get.find<OrderController>().stopLoader();
       HomeScreen.loadData(true);
-      if(_isCashOnDeliveryActive && Get.find<OrderController>().paymentMethodIndex == 1) {
+      if(Get.find<OrderController>().paymentMethodIndex == 1) {
         if(GetPlatform.isWeb) {
           Get.back();
           String hostname = html.window.location.hostname;

@@ -168,6 +168,7 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> with TickerProv
                           left: index == 0 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
                           right: index == catController.subCategoryList.length-1 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
                           top: Dimensions.PADDING_SIZE_SMALL,
+
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.horizontal(
@@ -181,6 +182,7 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> with TickerProv
                             ),
                           ),
                           color: Theme.of(context).primaryColor.withOpacity(0.1),
+
                         ),
                         child: Column(children: [
                           SizedBox(height: 3),
@@ -191,7 +193,7 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> with TickerProv
                                 : robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                           ),
                           index == catController.subCategoryIndex ? Container(
-                            height: 5, width: 5,
+                            height: 6, width: 5,
                             decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
                           ) : SizedBox(height: 5, width: 5),
                         ]),

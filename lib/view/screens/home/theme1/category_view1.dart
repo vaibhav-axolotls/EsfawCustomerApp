@@ -21,7 +21,7 @@ class CategoryView1 extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: TitleWidget(title: 'categories'.tr, onTap: () => Get.toNamed(RouteHelper.getCategoryRoute())),
+            child: TitleWidget(title: 'Categories'.tr, onTap: () => Get.toNamed(RouteHelper.getCategoryRoute())),
           ),
           Row(
             children: [

@@ -73,9 +73,12 @@ class ItemWidget extends StatelessWidget {
           Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
         }
       },
+
       child: Container(
+
         padding: ResponsiveHelper.isDesktop(context) ? EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL) : null,
         decoration: BoxDecoration(
+
           borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
           color: ResponsiveHelper.isDesktop(context) ? Theme.of(context).cardColor : null,
           boxShadow: ResponsiveHelper.isDesktop(context) ? [BoxShadow(
@@ -86,25 +89,29 @@ class ItemWidget extends StatelessWidget {
 
           Expanded(child: Padding(
             padding: EdgeInsets.symmetric(vertical: _desktop ? 0 : Dimensions.PADDING_SIZE_EXTRA_SMALL),
+
             child: Row(children: [
 
               Stack(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+
                   child: CustomImage(
                     image: '${isCampaign ? _baseUrls.campaignImageUrl : isStore ? _baseUrls.storeImageUrl
                         : _baseUrls.itemImageUrl}'
                         '/${isStore ? store.logo : item.image}',
-                    height: _desktop ? 120 : 65, width: _desktop ? 120 : 80, fit: BoxFit.cover,
+
+
                   ),
                 ),
+
                 DiscountTag(
                   discount: _discount, discountType: _discountType,
                   freeDelivery: isStore ? store.freeDelivery : false,
                 ),
                 _isAvailable ? SizedBox() : NotAvailableWidget(isStore: isStore),
               ]),
-              SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+              SizedBox(width: Dimensions.PADDING_SIZE_SMALL,),
 
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [

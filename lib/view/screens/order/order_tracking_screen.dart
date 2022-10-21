@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -5,10 +6,13 @@ import 'dart:ui';
 import 'package:sixam_mart/controller/location_controller.dart';
 import 'package:sixam_mart/controller/order_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
+import 'package:sixam_mart/data/model/body/notification_body.dart';
 import 'package:sixam_mart/data/model/response/address_model.dart';
+import 'package:sixam_mart/data/model/response/conversation_model.dart';
 import 'package:sixam_mart/data/model/response/order_model.dart';
 import 'package:sixam_mart/data/model/response/store_model.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
+import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/view/base/custom_app_bar.dart';
@@ -32,13 +36,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   GoogleMapController _controller;
   bool _isLoading = true;
   Set<Marker> _markers = HashSet<Marker>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadData();
-  }
+  Timer _timer;
 
   void _loadData() async {
     await Get.find<LocationController>().getCurrentLocation(true, notify: false, defaultLatLng: LatLng(
@@ -48,10 +46,25 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     Get.find<OrderController>().trackOrder(widget.orderID, null, true);
   }
 
+  void _startApiCall(){
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      Get.find<OrderController>().timerTrackOrder(widget.orderID.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadData();
+    _startApiCall();
+  }
+
   @override
   void dispose() {
     super.dispose();
     _controller?.dispose();
+    _timer?.cancel();
   }
 
   @override
@@ -110,7 +123,14 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
           Positioned(
             bottom: Dimensions.PADDING_SIZE_SMALL, left: Dimensions.PADDING_SIZE_SMALL, right: Dimensions.PADDING_SIZE_SMALL,
-            child: TrackDetailsView(status: _track.orderStatus, track: _track),
+            child: TrackDetailsView(status: _track.orderStatus, track: _track, callback: () async{
+              _timer?.cancel();
+              await Get.toNamed(RouteHelper.getChatRoute(
+                notificationBody: NotificationBody(deliverymanId: _track.deliveryMan.id, orderId: int.parse(widget.orderID)),
+                user: User(id: _track.deliveryMan.id, fName: _track.deliveryMan.fName, lName: _track.deliveryMan.lName, image: _track.deliveryMan.image),
+              ));
+              _startApiCall();
+            }),
           ),
 
         ]))) : Center(child: CircularProgressIndicator());

@@ -34,9 +34,9 @@ class OrderView extends StatelessWidget {
         return paginatedOrderModel != null ? paginatedOrderModel.orders.length > 0 ? RefreshIndicator(
           onRefresh: () async {
             if(isRunning) {
-              await orderController.getRunningOrders(1);
+              await orderController.getRunningOrders(1, isUpdate: true);
             }else {
-              await orderController.getHistoryOrders(1);
+              await orderController.getHistoryOrders(1, isUpdate: true);
             }
           },
           child: Scrollbar(child: SingleChildScrollView(

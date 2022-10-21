@@ -3,7 +3,6 @@ import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/data/model/response/menu_model.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
-import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/view/screens/menu/widget/menu_button.dart';
@@ -33,6 +32,7 @@ class _MenuScreenState extends State<MenuScreen> {
       MenuModel(icon: Images.policy, title: 'privacy_policy'.tr, route: RouteHelper.getHtmlRoute('privacy-policy')),
       MenuModel(icon: Images.about_us, title: 'about_us'.tr, route: RouteHelper.getHtmlRoute('about-us')),
       MenuModel(icon: Images.terms, title: 'terms_conditions'.tr, route: RouteHelper.getHtmlRoute('terms-and-condition')),
+      MenuModel(icon: Images.chat, title: 'live_chat'.tr, route: RouteHelper.getConversationRoute()),
     ];
 
     if(Get.find<SplashController>().configModel.refEarningStatus == 1 ){
@@ -47,14 +47,14 @@ class _MenuScreenState extends State<MenuScreen> {
     if(Get.find<SplashController>().configModel.toggleDmRegistration && !ResponsiveHelper.isDesktop(context)) {
       _menuList.add(MenuModel(
         icon: Images.delivery_man_join, title: 'join_as_a_delivery_man'.tr,
-        route: '${AppConstants.BASE_URL}/deliveryman/apply',
+        route: RouteHelper.getDeliverymanRegistrationRoute(),
       ));
     }
     if(Get.find<SplashController>().configModel.toggleStoreRegistration && !ResponsiveHelper.isDesktop(context)) {
       _menuList.add(MenuModel(
         icon: Images.restaurant_join, title: Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
           ? 'join_as_a_restaurant'.tr : 'join_as_a_store'.tr,
-        route: '${AppConstants.BASE_URL}/store/apply',
+        route: RouteHelper.getRestaurantRegistrationRoute(),
       ));
     }
     _menuList.add(MenuModel(icon: Images.log_out, title: _isLoggedIn ? 'logout'.tr : 'sign_in'.tr, route: ''));

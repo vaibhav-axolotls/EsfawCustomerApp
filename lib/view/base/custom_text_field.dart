@@ -20,6 +20,9 @@ class CustomTextField extends StatefulWidget {
   final double prefixSize;
   final bool divider;
   final TextAlign textAlign;
+  final bool isAmount;
+  final bool isNumber;
+  final bool showTitle;
 
   CustomTextField(
       {this.hintText = 'Write something...',
@@ -37,8 +40,11 @@ class CustomTextField extends StatefulWidget {
       this.isPassword = false,
       this.prefixSize = Dimensions.PADDING_SIZE_SMALL,
       this.divider = false,
-      this.textAlign = TextAlign.start}
-  );
+      this.textAlign = TextAlign.start,
+      this.isAmount = false,
+      this.isNumber = false,
+      this.showTitle = false,
+      });
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -50,7 +56,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        widget.showTitle ? Text(widget.hintText, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)) : SizedBox(),
+        SizedBox(height: widget.showTitle ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0),
+
         TextField(
           maxLines: widget.maxLines,
           controller: widget.controller,
@@ -58,13 +69,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           textAlign: widget.textAlign,
           style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
           textInputAction: widget.inputAction,
-          keyboardType: widget.inputType,
+          keyboardType: widget.isAmount ? TextInputType.number : widget.inputType,
           cursorColor: Theme.of(context).primaryColor,
           textCapitalization: widget.capitalization,
           enabled: widget.isEnabled,
           autofocus: false,
           obscureText: widget.isPassword ? _obscureText : false,
-          inputFormatters: widget.inputType == TextInputType.phone ? <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : null,
+          inputFormatters: widget.inputType == TextInputType.phone ? <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
+              : widget.isAmount ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))] : widget.isNumber ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))] : null,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
